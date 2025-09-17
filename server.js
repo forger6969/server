@@ -1,17 +1,16 @@
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
-const { json } = require("stream/consumers");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Railway даёт свой порт
 
-app.use(cors());           // <<< Разрешаем запросы с фронта
-app.use(express.json());   // Чтобы понимать JSON
+app.use(cors());           
+app.use(express.json());   
 
 const USERS_FILE = "users.json";
 
-// Чтение файла
+// Чтение пользователей
 function readUsers() {
   if (!fs.existsSync(USERS_FILE)) {
     fs.writeFileSync(USERS_FILE, "[]");
@@ -20,14 +19,14 @@ function readUsers() {
   return JSON.parse(data);
 }
 
-// Запись файла
+// Запись пользователей
 function writeUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
 // Главная
 app.get("/", (req, res) => {
-  res.send("✅ Сервер работает и CORS включён!");
+  res.send("✅ Сервер работает на Railway!");
 });
 
 // Получить всех пользователей
@@ -57,5 +56,5 @@ app.delete("/users/:id", (req, res) => {
 
 // Запуск сервера
 app.listen(PORT, () => {
-  console.log(`🔥 Сервер запущен: http://localhost:${PORT}`);
+  console.log(`🔥 Сервер запущен на порту ${PORT}`);
 });
